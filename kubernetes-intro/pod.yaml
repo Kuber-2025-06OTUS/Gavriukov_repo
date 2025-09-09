@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: homework-web-server
+  namespace: homework
+  labels:
+    app: homework-web
+    component: webserver
+spec:
+  volumes:
+    - name: homework-volume
+      emptyDir: {}
+
+  initContainers:
+    - name: download-index
+      image: alpine:3.14
+      command: ['sh', '-c']
+      args:
+        - |
+          echo "<html><body><h1>Homework Web Server</h1><p>Welcome to my first homework!</p><p>Generated at: $(date)</p></body></html>" > /init/index.html;
+      volumeMounts:
+        - name: homework-volume
+          mountPath: /init
+
+  containers:
+    - name: web-server
+      image: nginx:alpine
+      ports:
+        - containerPort: 8000
+      volumeMounts:
+        - name: homework-volume
+          mountPath: /homework
+      lifecycle:
+        preStop:
+          exec:
+            command: ["sh", "-c", "rm -f /homework/index.html"]
+      
