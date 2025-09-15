@@ -37,10 +37,9 @@ spec:
       - name: web-server
         image: nginx:alpine
         readinessProbe:
-          exec:
-            command:
-            - cat
-            - /homework/index.html
+          httpGet:
+            path: /index.html
+            port: 8000
           initialDelaySeconds: 5
           periodSeconds: 5
         ports:
@@ -54,4 +53,5 @@ spec:
               command: ["sh", "-c", "rm -f /homework/index.html"]
       volumes:
       - name: homework-volume
+
         emptyDir: {}
