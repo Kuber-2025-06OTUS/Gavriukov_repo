@@ -1,0 +1,47 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: homework-config
+  namespace: homework
+  labels:
+    app: homework-web
+    component: configuration
+data:
+  app.name: "Homework Web Application"
+  app.version: "1.0.0"
+  environment: "production"
+  
+  server.port: "8000"
+  log.level: "INFO"
+  cache.enabled: "true"
+  
+  page.title: "Homework Web Server"
+  welcome.message: "Welcome to my first homework!"
+  footer.text: "Generated with Kubernetes"
+  
+  nginx.config: |
+    server {
+        listen 8000;
+        server_name localhost;
+        
+        location / {
+            root /homework;
+            index index.html;
+        }
+        
+        access_log /var/log/nginx/access.log;
+        error_log /var/log/nginx/error.log;
+    }
+  
+  app.settings: |
+    {
+      "features": {
+        "authentication": true,
+        "caching": false,
+        "logging": true
+      },
+      "limits": {
+        "max_connections": 100,
+        "timeout": 30
+      }
+    }
