@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-conf
+  namespace: homework
+data:
+  default.conf: |
+    server {
+        listen 8000;
+        server_name localhost;
+        root /homework;
+        
+        location / {
+            index index.html;
+        }
+        
+        location /conf/ {
+            alias /homework/conf/;
+            autoindex on;
+        }
+
+        location /metrics.html {
+            alias /homework/metrics.html;
+            add_header Content-Type text/html;
+        }
+        
+        access_log /var/log/nginx/access.log;
+        error_log /var/log/nginx/error.log;
+    }
