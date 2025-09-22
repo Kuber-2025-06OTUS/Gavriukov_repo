@@ -39,19 +39,12 @@ spec:
           command: ['sh', '-c']
           args:
             - |
-              until curl -k -H "Authorization: Bearer $(cat /var/run/secrets/kubernetes.io/serviceaccount/token)" --cacert /var/run/secrets/kubernetes.io/serviceaccount/ca.crt https://kubernetes.default.svc/healthz >/dev/null 2>&1; do
-                sleep 2
-              done
               curl -k -H "Authorization: Bearer $(cat /var/run/secrets/kubernetes.io/serviceaccount/token)" \
                 --cacert /var/run/secrets/kubernetes.io/serviceaccount/ca.crt \
-                https://kubernetes.default.svc/metrics > /metrics-tmp/metrics.html
-              echo "<html><body><h1>Kubernetes Metrics</h1><pre>" > /metrics-tmp/metrics.tmp
-              cat /metrics-tmp/metrics.html >> /metrics-tmp/metrics.tmp
-              echo "</pre></body></html>" >> /metrics-tmp/metrics.tmp
-              mv /metrics-tmp/metrics.tmp /metrics-tmp/metrics.html
+                https://kubernetes.default.svc/metrics > /init/metrics.html
           volumeMounts:
             - name: homework-volume
-              mountPath: /metrics-tmp
+              mountPath: /init
       containers:
       - name: web-server
         image: nginx:alpine
